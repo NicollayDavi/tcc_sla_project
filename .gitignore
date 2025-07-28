@@ -1,0 +1,63 @@
+# Miscellaneous
+*.class
+*.lock
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.vscode/
+.idea/
+.metadata
+.packages
+*.iml
+*.ipr
+*.iws
+
+# Build output
+build/
+**/build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.migrate-working-dir/
+
+# Flutter iOS
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Generated.xcconfig
+ios/Flutter/*.podspec
+ios/.symlinks/
+ios/Pods/
+ios/build/
+
+# Flutter Android
+android/.gradle/
+android/build/
+*.jks
+*.keystore
+local.properties
+
+# Flutter macOS
+macos/Flutter/
+macos/build/
+
+# Flutter Linux
+linux/flutter/
+linux/build/
+
+# Flutter Windows
+windows/flutter/
+windows/build/
+windows/runner/
+
+# VSCode & JetBrains IDEs
+.vscode/
+.idea/
+
+# Others
+app.*.symbols
+app.*.map.json
+*.temp
