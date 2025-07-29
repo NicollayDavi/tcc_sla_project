@@ -1,8 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/modules/home/home_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _login() {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    // Expressão regular simples para validar e-mail
+    final bool emailValid = RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$").hasMatch(email);
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, preencha todos os campos.')),
+      );
+    } else if (!emailValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Por favor, insira um e-mail válido.')),
+      );
+    } else {
+      // Se passar na validação, segue para a HomePage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +51,7 @@ class LoginPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             TextFormField(
-              // autofocus: true,
+              controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: "E-mail",
@@ -33,7 +65,7 @@ class LoginPage extends StatelessWidget {
             ),
             SizedBox(height: 10),
             TextFormField(
-              // autofocus: true,
+              controller: _passwordController,
               keyboardType: TextInputType.text,
               obscureText: true,
               decoration: InputDecoration(
@@ -54,30 +86,25 @@ class LoginPage extends StatelessWidget {
                 child: Text(
                   "Esqueci a senha",
                   style: TextStyle(
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ), // ajuste se precisar de contraste
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
-              SizedBox(height: 40),
-              SizedBox(
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.blueAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+            SizedBox(height: 40),
+            SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text('Entrar', style: TextStyle(fontSize: 18)),
                 ),
+                child: const Text('Entrar', style: TextStyle(fontSize: 18)),
+              ),
             ),
           ],
         ),
