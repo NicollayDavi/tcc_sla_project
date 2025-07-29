@@ -16,7 +16,7 @@ class _MyWidgetState extends State<HomePage> {
       appBar: AppBar(
         title: Text('SLA Connect'),
         centerTitle: true,
-        backgroundColor: const Color(0XFF0C1B2A),
+        backgroundColor: const Color.fromARGB(255, 75, 94, 119),
         titleTextStyle: const TextStyle(
           color: Colors.white,
           fontSize: 20,
