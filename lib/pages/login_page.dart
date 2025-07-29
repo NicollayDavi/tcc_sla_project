@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
             SizedBox(
               width: 128,
               height: 128,
-              child: Image.asset('assets/images/slaconnect_logo.jpeg'),
+              child: Image.asset('assets/images/logo1.png'),
             ),
             SizedBox(height: 20),
             TextFormField(
