@@ -31,7 +31,7 @@ class _MyWidgetState extends State<HomePage> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: const Color(0XFF0C1B2A),
+                color: Color(0XFF0C1B2A),
               ) ,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
