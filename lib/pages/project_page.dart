@@ -1,19 +1,57 @@
 import 'package:flutter/material.dart';
+import 'profile_page.dart';
+import 'qrcode_page.dart';
 
-class ProjectPage extends StatelessWidget {
+class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
+
+  @override
+  State<ProjectPage> createState() => _ProjectPageState();
+}
+
+class _ProjectPageState extends State<ProjectPage> {
+  int _selectedIndex = 2; // O ícone de casa (home) agora está no índice 2
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      print('Estrelas pressionado');
+    } else if (index == 1) {
+      print('Adicionar pressionado');
+    } else if (index == 2) {
+      print('Home pressionado');
+    } else if (index == 3) {
+      // Índice do botão QR code no print (4º ícone)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const QRCodePage()),
+      );
+    } else if (index == 4) {
+      // Índice do botão Perfil (5º ícone)
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfilePage()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF061143), // fundo azul escuro
+      backgroundColor: const Color(0xFF061143),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: const Color(0xFF061143),
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.star_border), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
@@ -41,7 +79,10 @@ class ProjectPage extends StatelessWidget {
                         children: [
                           Text(
                             'Olá, usuário!',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           Text(
                             'Seja bem-vindo (a)',
@@ -51,10 +92,7 @@ class ProjectPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Image.asset(
-                    'assets/logo.png', // substitua pelo caminho correto da logo
-                    height: 40,
-                  ),
+                  Image.asset('assets/images/logo1.png', height: 40),
                 ],
               ),
               const SizedBox(height: 20),
@@ -149,17 +187,23 @@ class ProjectPage extends StatelessWidget {
             color: Colors.white24,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(Icons.image, color: Colors.white), // Imagem do projeto (placeholder)
+          child: const Icon(Icons.image, color: Colors.white),
         ),
         title: Text(
           title,
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Dia: $date', style: const TextStyle(color: Colors.white70)),
-            Text('Horários: Das $hour', style: const TextStyle(color: Colors.white70)),
+            Text(
+              'Horários: Das $hour',
+              style: const TextStyle(color: Colors.white70),
+            ),
             Text(room, style: const TextStyle(color: Colors.white70)),
           ],
         ),
