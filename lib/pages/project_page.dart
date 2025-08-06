@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'profile_page.dart';
-import 'qrcode_page.dart';
+import 'package:tcc_sla_project/pages/profile_page.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
@@ -24,11 +23,7 @@ class _ProjectPageState extends State<ProjectPage> {
     } else if (index == 2) {
       print('Home pressionado');
     } else if (index == 3) {
-      // Índice do botão QR code no print (4º ícone)
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const QRCodePage()),
-      );
+      // Índice do botão QR code no print (4º ícone)s
     } else if (index == 4) {
       // Índice do botão Perfil (5º ícone)
       Navigator.push(

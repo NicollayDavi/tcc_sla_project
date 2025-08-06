@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'package:tcc_sla_project/modules/home/home_page.dart';
+import 'package:tcc_sla_project/pages/home_page.dart';
 import 'package:tcc_sla_project/pages/register_page.dart';
-import 'package:tcc_sla_project/pages/project_page.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -32,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ProjectPage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
   }
