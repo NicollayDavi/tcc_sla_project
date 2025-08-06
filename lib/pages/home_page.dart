@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
-// Importe suas páginas abaixo
 import 'package:tcc_sla_project/pages/map_page.dart';
 import 'package:tcc_sla_project/pages/date_page.dart';
 import 'package:tcc_sla_project/pages/project_page.dart';
 import 'package:tcc_sla_project/pages/add_project_page.dart';
+import 'package:tcc_sla_project/pages/sla_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -74,7 +74,7 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                Image.asset('assets/images/logo1.png', height: 40), // lobo
+                Image.asset('assets/images/logo1.png', height: 60), // lobo
               ],
             ),
           ),
@@ -93,7 +93,7 @@ class HomePage extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset('assets/images/logo2.png', height: 60),
+                      Image.asset('assets/images/logo2.png', height: 80),
                       const SizedBox(width: 16),
                       const Expanded(
                         child: Text(
@@ -113,6 +113,10 @@ class HomePage extends StatelessWidget {
                   // Botão "O que é a SLA?" mais alto
                   ElevatedButton.icon(
                     onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SlaPage()),
+                      );
                       // Ação da SLA
                     },
                     icon: const Icon(Icons.person_outline),
