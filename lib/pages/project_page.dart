@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
+import 'package:tcc_sla_project/pages/home_page.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
@@ -9,180 +10,150 @@ class ProjectPage extends StatefulWidget {
 }
 
 class _ProjectPageState extends State<ProjectPage> {
-  int _selectedIndex = 2; // O ícone de casa (home) agora está no índice 2
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (index == 0) {
-      print('Estrelas pressionado');
-    } else if (index == 1) {
-      print('Adicionar pressionado');
-    } else if (index == 2) {
-      print('Home pressionado');
-    } else if (index == 3) {
-      // Índice do botão QR code no print (4º ícone)s
-    } else if (index == 4) {
-      // Índice do botão Perfil (5º ícone)
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfilePage()),
-      );
-    }
-  }
+  List<Map<String, dynamic>> projects = [
+    {
+      'title': 'IGUALDADE DE GÊNERO',
+      'date': '02/07/2024',
+      'hour': '08:00 até 15:00',
+      'room': 'Sala: 14',
+      'favorite': false,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF061143),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF061143),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.star_border), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomePage()),
+          );
+        },
+        backgroundColor: const Color(0xFF1C2F70),
+        child: const Icon(Icons.home, color: Colors.white),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Topo com saudação
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.person, color: Color(0xFF061143)),
-                      ),
-                      SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Olá, usuário!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Seja bem-vindo (a)',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Image.asset('assets/images/logo1.png', height: 40),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Projetos',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: ListView(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        color: const Color(0xFF1C2F70),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: const SizedBox(height: 56),
+      ),
+      body: Column(
+        children: [
+          Container(
+            color: const Color(0xFF0A1C60),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
-                    _buildProjectCard(
-                      context,
-                      title: 'IGUALDADE DE GÊNERO',
-                      date: '02/07/2024',
-                      hour: '08:00 até 15:00',
-                      room: 'Sala: 14',
-                      borderColor: Colors.transparent,
-                      iconColor: Colors.white,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 36,
+                      ),
                     ),
-                    _buildProjectCard(
-                      context,
-                      title: 'TEA - TRANSTORNO DO ESPECTRO AUTISTA',
-                      date: '02/07/2024',
-                      hour: '10:00 até 16:00',
-                      room: 'Sala: 14',
-                      borderColor: Colors.green,
-                      iconColor: Colors.green,
-                    ),
-                    _buildProjectCard(
-                      context,
-                      title: 'RACISMO É CRIME!',
-                      date: '02/07/2024',
-                      hour: '08:00 até 13:00',
-                      room: 'Sala: 15',
-                      borderColor: Colors.transparent,
-                      iconColor: Colors.white,
-                    ),
-                    _buildProjectCard(
-                      context,
-                      title: 'FAKE NEWS!',
-                      date: '02/07/2024',
-                      hour: '12:00 até 15:30',
-                      room: 'Sala: 17',
-                      borderColor: Colors.transparent,
-                      iconColor: Colors.white,
-                    ),
-                    _buildProjectCard(
-                      context,
-                      title: 'Mulheres têm sua liberdade',
-                      date: '02/07/2024',
-                      hour: '13:00 até 16:00',
-                      room: 'Sala: 30',
-                      borderColor: Colors.pink,
-                      iconColor: Colors.pink,
+                    const SizedBox(width: 12),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Olá, usuário!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          "Seja bem-vindo (a)",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-            ],
+                Image.asset('assets/images/logo1.png', height: 60),
+              ],
+            ),
           ),
-        ),
+          const SizedBox(height: 20),
+          const Text(
+            'Projetos',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView.builder(
+              itemCount: projects.length,
+              itemBuilder: (context, index) {
+                final project = projects[index];
+                return _buildProjectCard(
+                  title: project['title'],
+                  date: project['date'],
+                  hour: project['hour'],
+                  room: project['room'],
+                  isFavorite: project['favorite'],
+                  onDelete: () {
+                    setState(() {
+                      projects.removeAt(index);
+                    });
+                  },
+                  onFavoriteToggle: () {
+                    setState(() {
+                      projects[index]['favorite'] = !project['favorite'];
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildProjectCard(
-    BuildContext context, {
+  Widget _buildProjectCard({
     required String title,
     required String date,
     required String hour,
     required String room,
-    required Color borderColor,
-    required Color iconColor,
+    required bool isFavorite,
+    required VoidCallback onDelete,
+    required VoidCallback onFavoriteToggle,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
       decoration: BoxDecoration(
-        border: Border.all(color: borderColor, width: 2),
         color: const Color(0xFF0A1B55),
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: Colors.white24,
-            borderRadius: BorderRadius.circular(8),
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.asset(
+            'assets/images/logo3.png',
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
           ),
-          child: const Icon(Icons.image, color: Colors.white),
         ),
         title: Text(
           title,
@@ -202,14 +173,28 @@ class _ProjectPageState extends State<ProjectPage> {
             Text(room, style: const TextStyle(color: Colors.white70)),
           ],
         ),
-        trailing: Column(
-          children: [
-            Icon(Icons.close, color: iconColor),
-            const SizedBox(height: 10),
-            Icon(Icons.favorite_border, color: Colors.white),
-          ],
+        trailing: SizedBox(
+          height: 80,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: onDelete,
+                tooltip: 'Excluir projeto',
+              ),
+              IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite ? Colors.red : Colors.white,
+                ),
+                onPressed: onFavoriteToggle,
+                tooltip: 'Favoritar',
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      ), // FECHA ListTile
+    ); // FECHA Container <--- ESSA É A QUE FALTAVA
   }
 }

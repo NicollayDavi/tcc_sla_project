@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_sla_project/pages/edit_profile.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -7,24 +8,31 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF061143),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF061143),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.star_border), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
+
+      // Botão flutuante central igual ao HomePage
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pop(context); // volta para a Home
+        },
+        backgroundColor: const Color(0xFF1C2F70),
+        child: const Icon(Icons.home, color: Colors.white),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+
+      // BottomAppBar igual ao HomePage
+      bottomNavigationBar: BottomAppBar(
+        color: const Color(0xFF1C2F70),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8.0,
+        child: const SizedBox(height: 56),
+      ),
+
       body: Column(
         children: [
+          // Header igual estilo da HomePage
           Container(
             padding: const EdgeInsets.all(16),
-            color: const Color(0xFF202D5A), // azul médio
+            color: const Color(0xFF0A1C60), // azul médio da HomePage
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -57,6 +65,8 @@ class ProfilePage extends StatelessWidget {
               ],
             ),
           ),
+
+          // Parte de perfil
           Container(
             width: double.infinity,
             color: const Color(0xFF061143),
@@ -87,17 +97,24 @@ class ProfilePage extends StatelessWidget {
               ],
             ),
           ),
+
           const SizedBox(height: 24),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
+                // Botão editar perfil
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // lógica para editar perfil
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfilePage(),
+                        ),
+                      );
                     },
                     icon: const Icon(Icons.edit, size: 18),
                     label: const Text('Editar Perfil'),
@@ -110,13 +127,84 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 16),
+
+                // Botão sair da conta com diálogo de confirmação
                 SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // lógica para sair
+                      showDialog(
+                        context: context,
+                        builder: (_) {
+                          return Dialog(
+                            backgroundColor: const Color(0xFF0A1C60),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Image.asset(
+                                    'assets/images/logo1.png',
+                                    height: 60,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Text(
+                                    "SLA CONNECT",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    "Deseja realmente sair da conta?",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 14,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.grey,
+                                        ),
+                                        child: const Text("Cancelar"),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          // lógica de logout
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFF1C2F70,
+                                          ),
+                                        ),
+                                        child: const Text("Confirmar"),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
                     icon: const Icon(Icons.logout, size: 18),
                     label: const Text('Sair da conta'),
