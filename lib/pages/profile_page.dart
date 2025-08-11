@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/edit_profile.dart';
+import 'package:tcc_sla_project/pages/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -188,7 +189,13 @@ class ProfilePage extends StatelessWidget {
                                       ElevatedButton(
                                         onPressed: () {
                                           Navigator.pop(context);
-                                          // lógica de logout
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LoginPage(),
+                                            ),
+                                          );
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: const Color(
