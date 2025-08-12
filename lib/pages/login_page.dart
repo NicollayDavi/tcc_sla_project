@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 import 'package:tcc_sla_project/pages/register_page.dart';
+import 'package:tcc_sla_project/controllers/login_controller.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -14,11 +15,11 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
+  void _login() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    final bool emailValid = RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$").hasMatch(email);
+    final bool emailValid = true; //RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$").hasMatch(email);
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -29,10 +30,18 @@ class _LoginPageState extends State<LoginPage> {
         SnackBar(content: Text('Por favor, insira um e-mail válido.')),
       );
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      final success = await LoginController.login(email, password);
+      
+      if (success) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Email ou senha incorretos.')),
+        );
+      }
     }
   }
 

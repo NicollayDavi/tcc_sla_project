@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/login_page.dart';
+import 'package:tcc_sla_project/controllers/register_controller.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -11,18 +12,20 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  //final _confirmPasswordController = TextEditingController();
   final _rmController = TextEditingController();
+  final _nomeController = TextEditingController();
+  
 
-  void _register() {
+  void _register() async {
+    final nome = _nomeController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
     final rm = _rmController.text.trim();
 
     if (email.isEmpty ||
         password.isEmpty ||
-        confirmPassword.isEmpty ||
+        nome.isEmpty ||
         rm.isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -30,17 +33,18 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    if (password != confirmPassword) {
+    final success = await RegisterController.register(nome, email, password, rm);
+    
+    if (success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } else {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('As senhas não coincidem')));
-      return;
+      ).showSnackBar(SnackBar(content: Text('Erro ao realizar cadastro')));
     }
-
-    // Aqui você pode continuar com o processo de cadastro
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Cadastro realizado com sucesso')));
   }
 
   @override
@@ -108,15 +112,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 obscure: true,
               ),
               const SizedBox(height: 10),
-              _buildLabel("Confirmar senha"),
+              _buildLabel("Nome"),
               _buildInput(
-                "Confirme a senha...",
-                _confirmPasswordController,
-                obscure: true,
-              ),
+                "Digite o nome..." , _nomeController),
+                //_confirmPasswordController,
+               // obscure: true\
+              
               const SizedBox(height: 10),
-              _buildLabel("Rm"),
-              _buildInput("Digite o rm...", _rmController),
+              _buildLabel("RM"),
+              _buildInput("Digite o RM...", _rmController),
               const SizedBox(height: 25),
               SizedBox(
                 height: 50,
@@ -129,7 +133,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text("Entrar", style: TextStyle(fontSize: 18)),
+                  child: const Text("Criar", style: TextStyle(fontSize: 18)),
                 ),
               ),
               const SizedBox(height: 15),
@@ -151,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text("Logar", style: TextStyle(fontSize: 14)),
+                  child: const Text("Cancelar", style: TextStyle(fontSize: 14)),
                 ),
               ),
             ],
