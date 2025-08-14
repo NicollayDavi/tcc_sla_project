@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tcc_sla_project/pages/edit_profile.dart';
+import 'package:tcc_sla_project/pages/view_profile_page.dart';
 import 'package:tcc_sla_project/pages/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -113,12 +113,12 @@ class ProfilePage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const EditProfilePage(),
+                          builder: (context) => const ViewProfilePage(),
                         ),
                       );
                     },
-                    icon: const Icon(Icons.edit, size: 18),
-                    label: const Text('Editar Perfil'),
+                    icon: const Icon(Icons.person, size: 18),
+                    label: const Text('Visualizar Perfil'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF202D5A),
                       foregroundColor: Colors.white,

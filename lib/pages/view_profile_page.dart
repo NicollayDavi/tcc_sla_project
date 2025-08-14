@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class EditProfilePage extends StatelessWidget {
-  const EditProfilePage({super.key});
+class ViewProfilePage extends StatefulWidget {
+  const ViewProfilePage({super.key});
+
+  @override
+  State<ViewProfilePage> createState() => _ViewProfilePageState();
+}
+
+class _ViewProfilePageState extends State<ViewProfilePage> {
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +21,12 @@ class EditProfilePage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          "Perfil",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("Perfil", style: TextStyle(color: Colors.white)),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: Image.asset('assets/images/logo1.png', height: 36),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -52,38 +56,46 @@ class EditProfilePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  _buildTextField(label: "Nome:"),
+                  _buildInfoField(label: "Nome:", value: "Fulano da Silva"),
                   const SizedBox(height: 12),
-                  _buildTextField(label: "Apelido:"),
+                  _buildInfoField(label: "RM:", value: "123456"),
                   const SizedBox(height: 12),
-                  _buildTextField(
-                    label: "EMAIL",
-                    hintText: "xxxxxx@gmail.com",
+                  _buildInfoField(
+                    label: "E-mail",
+                    value: "fulano@gmail.com",
                     icon: Icons.email,
-                    readOnly: true,
                   ),
                   const SizedBox(height: 12),
-                  _buildTextField(
-                    label: "Senha",
-                    hintText: "**********",
-                    icon: Icons.lock,
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // lógica para salvar alterações
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF061143),
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  TextField(
+                    obscureText: !_showPassword,
+                    readOnly: true,
+                    controller: TextEditingController(
+                      text: _showPassword ? "minhaSenha123" : "**********",
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: "Senha",
+                      labelStyle: const TextStyle(color: Colors.white),
+                      prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _showPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: Colors.white70,
                         ),
+                        onPressed: () {
+                          setState(() {
+                            _showPassword = !_showPassword;
+                          });
+                        },
                       ),
-                      child: const Text("Salvar"),
+                      filled: true,
+                      fillColor: const Color(0xFF061143),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
                   ),
                 ],
@@ -95,22 +107,18 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  static Widget _buildTextField({
+  static Widget _buildInfoField({
     required String label,
-    String? hintText,
+    required String value,
     IconData? icon,
-    bool obscureText = false,
-    bool readOnly = false,
   }) {
     return TextField(
-      obscureText: obscureText,
-      readOnly: readOnly,
+      readOnly: true,
+      controller: TextEditingController(text: value),
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(color: Colors.white),
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white70),
         prefixIcon: icon != null ? Icon(icon, color: Colors.white70) : null,
         filled: true,
         fillColor: const Color(0xFF061143),

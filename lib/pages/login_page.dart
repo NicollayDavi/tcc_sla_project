@@ -3,7 +3,6 @@ import 'package:tcc_sla_project/pages/home_page.dart';
 import 'package:tcc_sla_project/pages/register_page.dart';
 import 'package:tcc_sla_project/controllers/login_controller.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -19,19 +18,22 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    final bool emailValid = true; //RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$").hasMatch(email);
+    // Validação de e-mail com regex
+    final bool emailValid = RegExp(
+      r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$",
+    ).hasMatch(email);
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Por favor, preencha todos os campos.')),
+        const SnackBar(content: Text('Por favor, preencha todos os campos.')),
       );
     } else if (!emailValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Por favor, insira um e-mail válido.')),
+        const SnackBar(content: Text('Por favor, insira um e-mail válido.')),
       );
     } else {
       final success = await LoginController.login(email, password);
-      
+
       if (success) {
         Navigator.pushReplacement(
           context,
@@ -39,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Email ou senha incorretos.')),
+          const SnackBar(content: Text('Email ou senha incorretos.')),
         );
       }
     }
@@ -153,7 +155,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterPage()),
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterPage(),
+                      ),
                     );
                   },
                   style: OutlinedButton.styleFrom(
