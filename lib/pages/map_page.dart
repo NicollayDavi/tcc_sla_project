@@ -96,7 +96,7 @@ class MapPage extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.asset(
-                    'assets/images/logo4.png',
+                    'assets/images/planta.png',
                     fit: BoxFit.contain,
                     width: double.infinity,
                   ),
