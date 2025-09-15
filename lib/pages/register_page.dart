@@ -10,31 +10,31 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _nomeController = TextEditingController();
+  final _rmController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  //final _confirmPasswordController = TextEditingController();
-  final _rmController = TextEditingController();
-  final _nomeController = TextEditingController();
-  
 
   void _register() async {
     final nome = _nomeController.text.trim();
+    final rm = _rmController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final rm = _rmController.text.trim();
 
-    if (email.isEmpty ||
-        password.isEmpty ||
-        nome.isEmpty ||
-        rm.isEmpty) {
+    if (nome.isEmpty || rm.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Preencha todos os campos')));
       return;
     }
 
-    final success = await RegisterController.register(nome, email, password, rm);
-    
+    final success = await RegisterController.register(
+      nome,
+      email,
+      password,
+      rm,
+    );
+
     if (success) {
       Navigator.pushReplacement(
         context,
@@ -70,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 child: Column(
                   children: [
                     Text(
-                      'S L A',
+                      'SLA',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -101,7 +101,15 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 10),
+              _buildLabel("Nome"),
+              _buildInput("Digite o nome...", _nomeController),
+              //_confirmPasswordController,
+              // obscure: true\
+              const SizedBox(height: 10),
+              _buildLabel("RM"),
+              _buildInput("Digite o RM...", _rmController),
+              const SizedBox(height: 10),
               _buildLabel("E-mail"),
               _buildInput("Digite o e-mail do usuário...", _emailController),
               const SizedBox(height: 10),
@@ -111,16 +119,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 _passwordController,
                 obscure: true,
               ),
-              const SizedBox(height: 10),
-              _buildLabel("Nome"),
-              _buildInput(
-                "Digite o nome..." , _nomeController),
-                //_confirmPasswordController,
-               // obscure: true\
-              
-              const SizedBox(height: 10),
-              _buildLabel("RM"),
-              _buildInput("Digite o RM...", _rmController),
               const SizedBox(height: 25),
               SizedBox(
                 height: 50,

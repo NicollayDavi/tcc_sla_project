@@ -13,15 +13,23 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _passwordFocusNode = FocusNode();
+
+  bool _obscurePassword = true; // controla a visibilidade da senha
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   void _login() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    // Validação de e-mail com regex
-    final bool emailValid = RegExp(
-      r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$",
-    ).hasMatch(email);
+    final bool emailValid = RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$").hasMatch(email);
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -34,12 +42,14 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       final success = await LoginController.login(email, password);
 
-      if (success) {
+      if (success == true) {
+        if (!mounted) return;
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
       } else {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Email ou senha incorretos.')),
         );
@@ -65,11 +75,11 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Center(
+              const Center(
                 child: Column(
-                  children: const [
+                  children: [
                     Text(
-                      'S L A',
+                      'SLA',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
@@ -106,9 +116,9 @@ class _LoginPageState extends State<LoginPage> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Digite o email do usuário...',
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: const TextStyle(color: Colors.white70),
                   filled: true,
-                  fillColor: Color(0xFF0A1A3C),
+                  fillColor: const Color(0xFF0A1A3C),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -116,21 +126,50 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               const SizedBox(height: 10),
+
+              // -------- Campo de senha com fixes --------
               TextField(
+                key: ValueKey('pwd_${_obscurePassword ? 'obscure' : 'visible'}'), // força recriação segura
                 controller: _passwordController,
-                obscureText: true,
+                focusNode: _passwordFocusNode,
+                obscureText: _obscurePassword,
+                obscuringCharacter: '•',
+                enableSuggestions: false,
+                autocorrect: false,
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Digite sua senha...',
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintStyle: const TextStyle(color: Colors.white70),
                   filled: true,
-                  fillColor: Color(0xFF0A1A3C),
+                  fillColor: const Color(0xFF0A1A3C),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white70,
+                    ),
+                    onPressed: () {
+                      // preserva a posição do cursor e evita bug do caret no Web
+                      final selection = _passwordController.selection;
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                      // reatribui o cursor após o rebuild
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (mounted) {
+                          _passwordFocusNode.requestFocus();
+                          _passwordController.selection = selection;
+                        }
+                      });
+                    },
+                  ),
                 ),
               ),
+              // ------------------------------------------
+
               const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
