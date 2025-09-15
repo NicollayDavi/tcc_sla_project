@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
+import 'package:tcc_sla_project/pages/project_detail_page.dart';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
@@ -146,6 +147,19 @@ class _ProjectPageState extends State<ProjectPage> {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => ProjectDetailPage(
+                title: title,
+                date: date,
+                hour: hour,
+                room: room,
+              ),
+            ),
+          );
+        },
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Image.asset(
@@ -194,7 +208,7 @@ class _ProjectPageState extends State<ProjectPage> {
             ],
           ),
         ),
-      ), // FECHA ListTile
-    ); // FECHA Container <--- ESSA É A QUE FALTAVA
+      ),
+    );
   }
 }

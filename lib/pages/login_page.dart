@@ -29,7 +29,9 @@ class _LoginPageState extends State<LoginPage> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    final bool emailValid = RegExp(r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$").hasMatch(email);
+    final bool emailValid = RegExp(
+      r"^[\w\.-]+@[\w\.-]+\.\w{2,4}$",
+    ).hasMatch(email);
 
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -128,8 +130,11 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 10),
 
               // -------- Campo de senha com fixes --------
+              // -------- Campo de senha com Enter --------
               TextField(
-                key: ValueKey('pwd_${_obscurePassword ? 'obscure' : 'visible'}'), // força recriação segura
+                key: ValueKey(
+                  'pwd_${_obscurePassword ? 'obscure' : 'visible'}',
+                ),
                 controller: _passwordController,
                 focusNode: _passwordFocusNode,
                 obscureText: _obscurePassword,
@@ -148,16 +153,16 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                      _obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       color: Colors.white70,
                     ),
                     onPressed: () {
-                      // preserva a posição do cursor e evita bug do caret no Web
                       final selection = _passwordController.selection;
                       setState(() {
                         _obscurePassword = !_obscurePassword;
                       });
-                      // reatribui o cursor após o rebuild
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (mounted) {
                           _passwordFocusNode.requestFocus();
@@ -167,8 +172,8 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                 ),
+                onSubmitted: (_) => _login(),
               ),
-              // ------------------------------------------
 
               const SizedBox(height: 30),
               SizedBox(
