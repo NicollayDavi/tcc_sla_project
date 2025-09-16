@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tcc_sla_project/models/user_provider.dart';
@@ -136,7 +134,3 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     );
   }
 }
-
-
-
-
