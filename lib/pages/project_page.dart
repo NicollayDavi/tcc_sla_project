@@ -111,17 +111,6 @@ class _ProjectPageState extends State<ProjectPage> {
                   date: project['date'],
                   hour: project['hour'],
                   room: project['room'],
-                  isFavorite: project['favorite'],
-                  onDelete: () {
-                    setState(() {
-                      projects.removeAt(index);
-                    });
-                  },
-                  onFavoriteToggle: () {
-                    setState(() {
-                      projects[index]['favorite'] = !project['favorite'];
-                    });
-                  },
                 );
               },
             ),
@@ -136,9 +125,6 @@ class _ProjectPageState extends State<ProjectPage> {
     required String date,
     required String hour,
     required String room,
-    required bool isFavorite,
-    required VoidCallback onDelete,
-    required VoidCallback onFavoriteToggle,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
@@ -186,27 +172,6 @@ class _ProjectPageState extends State<ProjectPage> {
             ),
             Text(room, style: const TextStyle(color: Colors.white70)),
           ],
-        ),
-        trailing: SizedBox(
-          height: 80,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: onDelete,
-                tooltip: 'Excluir projeto',
-              ),
-              IconButton(
-                icon: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorite ? Colors.red : Colors.white,
-                ),
-                onPressed: onFavoriteToggle,
-                tooltip: 'Favoritar',
-              ),
-            ],
-          ),
         ),
       ),
     );

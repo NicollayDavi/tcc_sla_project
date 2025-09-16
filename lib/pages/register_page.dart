@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/login_page.dart';
 import 'package:tcc_sla_project/controllers/register_controller.dart';
+import 'package:provider/provider.dart';
+import 'package:tcc_sla_project/models/user_provider.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,6 +16,16 @@ class _RegisterPageState extends State<RegisterPage> {
   final _rmController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    _rmController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   void _register() async {
     final nome = _nomeController.text.trim();
@@ -22,9 +34,9 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text.trim();
 
     if (nome.isEmpty || rm.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Preencha todos os campos')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preencha todos os campos')),
+      );
       return;
     }
 
@@ -36,14 +48,17 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     if (success) {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.setUser(nome, rm, email);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Erro ao realizar cadastro')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao realizar cadastro')),
+      );
     }
   }
 
@@ -104,8 +119,6 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 10),
               _buildLabel("Nome"),
               _buildInput("Digite o nome...", _nomeController),
-              //_confirmPasswordController,
-              // obscure: true\
               const SizedBox(height: 10),
               _buildLabel("RM"),
               _buildInput("Digite o RM...", _rmController),
@@ -117,7 +130,8 @@ class _RegisterPageState extends State<RegisterPage> {
               _buildInput(
                 "Digite uma senha...",
                 _passwordController,
-                obscure: true,
+                obscure: _obscurePassword, // Passa a variável de estado
+                isPassword: true,
               ),
               const SizedBox(height: 25),
               SizedBox(
@@ -167,10 +181,12 @@ class _RegisterPageState extends State<RegisterPage> {
     String hint,
     TextEditingController controller, {
     bool obscure = false,
+    bool isPassword = false,
   }) {
     return TextField(
       controller: controller,
       obscureText: obscure,
+      obscuringCharacter: '•',
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         hintText: hint,
@@ -185,6 +201,19 @@ class _RegisterPageState extends State<RegisterPage> {
           horizontal: 12,
           vertical: 14,
         ),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  obscure ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.white70,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+              )
+            : null,
       ),
     );
   }

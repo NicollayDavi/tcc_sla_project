@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/view_profile_page.dart';
 import 'package:tcc_sla_project/pages/login_page.dart';
 
@@ -21,44 +23,49 @@ class ProfilePage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       // BottomAppBar igual ao HomePage
-      bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF1C2F70),
-        shape: const CircularNotchedRectangle(),
+      bottomNavigationBar: const BottomAppBar(
+        color: Color(0xFF1C2F70),
+        shape: CircularNotchedRectangle(),
         notchMargin: 8.0,
-        child: const SizedBox(height: 56),
+        child: SizedBox(height: 56),
       ),
 
       body: Column(
         children: [
-          // Header igual estilo da HomePage
+          // Header
           Container(
             padding: const EdgeInsets.all(16),
-            color: const Color(0xFF0A1C60), // azul médio da HomePage
+            color: const Color(0xFF0A1C60),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  children: const [
-                    CircleAvatar(
+                  children: [
+                    const CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.person, color: Color(0xFF061143)),
                     ),
-                    SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Olá, usuário!',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'Seja bem-vindo (a)',
-                          style: TextStyle(color: Colors.white70, fontSize: 12),
-                        ),
-                      ],
+                    const SizedBox(width: 12),
+                    // Usando Consumer para obter o nome do usuário
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, child) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Olá, ${userProvider.user?.name ?? 'usuário'}!',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Text(
+                              'Seja bem-vindo (a)',
+                              style: TextStyle(color: Colors.white70, fontSize: 12),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -67,35 +74,56 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
 
-          // Parte de perfil
+          // Parte de perfil com os dados do usuário
           Container(
             width: double.infinity,
             color: const Color(0xFF061143),
             padding: const EdgeInsets.symmetric(vertical: 24),
-            child: Column(
-              children: [
-                const CircleAvatar(
-                  radius: 32,
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person, color: Color(0xFF061143), size: 32),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+            child: Consumer<UserProvider>(
+              builder: (context, userProvider, child) {
+                final user = userProvider.user;
+                return Column(
+                  children: [
+                    const CircleAvatar(
+                      radius: 32,
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.person, color: Color(0xFF061143), size: 32),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          user?.name ?? 'Nome do Usuário',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'monospace',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.school, color: Colors.cyanAccent),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
                     Text(
-                      'Nicolle da Silva Goulart',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'monospace',
-                        fontWeight: FontWeight.bold,
+                      user?.email ?? 'email@exemplo.com',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
                       ),
                     ),
-                    SizedBox(width: 8),
-                    Icon(Icons.school, color: Colors.cyanAccent),
+                    const SizedBox(height: 4),
+                    Text(
+                      user?.rm ?? 'RM: Não informado',
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
-                ),
-              ],
+                );
+              },
             ),
           ),
 
@@ -104,7 +132,7 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               children: [
-                // Botão editar perfil
+                // Botão visualizar perfil
                 SizedBox(
                   width: double.infinity,
                   height: 48,
@@ -174,8 +202,7 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 20),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       ElevatedButton(
                                         onPressed: () {
@@ -192,15 +219,12 @@ class ProfilePage extends StatelessWidget {
                                           Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const LoginPage(),
+                                              builder: (context) => const LoginPage(),
                                             ),
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(
-                                            0xFF1C2F70,
-                                          ),
+                                          backgroundColor: const Color(0xFF1C2F70),
                                         ),
                                         child: const Text("Confirmar"),
                                       ),

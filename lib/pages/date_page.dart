@@ -1,25 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 
-class DatePage extends StatefulWidget {
+class DatePage extends StatelessWidget {
   const DatePage({super.key});
 
   @override
-  State<DatePage> createState() => _DatePageState();
-}
-
-class _DatePageState extends State<DatePage> {
-  @override
   Widget build(BuildContext context) {
+    final DateTime now = DateTime.now();
+    final int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    final int firstWeekday = DateTime(now.year, now.month, 1).weekday; // 1 = segunda, 7 = domingo
+
+    // Cria lista com dias do mês + espaços em branco do início
+    final List<Widget> dayWidgets = [];
+
+    // Espaços antes do 1º dia
+    for (int i = 1; i < firstWeekday; i++) {
+      dayWidgets.add(const SizedBox());
+    }
+
+    // Dias do mês
+    for (int day = 1; day <= daysInMonth; day++) {
+      final bool isToday = day == now.day;
+
+      dayWidgets.add(
+        Container(
+          margin: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: isToday ? Colors.green : Colors.transparent,
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            "$day",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isToday ? Colors.white : Colors.black,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFF061143),
 
-      // Botão central (Home)
+      // Botão flutuante central (voltar para a Home)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => const HomePage()),
+            (route) => false,
           );
         },
         backgroundColor: const Color(0xFF1C2F70),
@@ -27,7 +59,7 @@ class _DatePageState extends State<DatePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // Barra inferior igual à HomePage
+      // Barra inferior
       bottomNavigationBar: BottomAppBar(
         color: const Color(0xFF1C2F70),
         shape: const CircularNotchedRectangle(),
@@ -35,184 +67,145 @@ class _DatePageState extends State<DatePage> {
         child: const SizedBox(height: 56),
       ),
 
-      // Conteúdo da página
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Topo com saudação
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Column(
+        children: [
+          // Cabeçalho padronizado
+          Container(
+            color: const Color(0xFF0A1C60),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ProfilePage(),
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 36,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Olá, usuário!",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          "Seja bem-vindo (a)",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Image.asset('assets/images/logo1.png', height: 60),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
+          // Título "DATAS"
+          const Text(
+            'DATAS:',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Calendário manual
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
                 children: [
-                  const Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.person, color: Color(0xFF061143)),
-                      ),
-                      SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Olá, usuário!',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Seja bem-vindo (a)',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
+                  // Mês e ano
+                  Text(
+                    "${_mesPorExtenso(now.month)} ${now.year}",
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Dias da semana
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: const [
+                      Text("seg", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("ter", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("qua", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("qui", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("sex", style: TextStyle(fontWeight: FontWeight.bold)),
+                      Text("sáb", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                      Text("dom", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                     ],
                   ),
-                  Image.asset('assets/images/logo1.png', height: 40),
+                  const SizedBox(height: 8),
+
+                  // Dias em grid
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 7,
+                      children: dayWidgets,
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 20),
-
-              // Seção de Datas
-              const Text(
-                'DATAS:',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              _buildCalendar(),
-
-              const SizedBox(height: 20),
-
-              // Seção de Horários
-              const Text(
-                'Horários:',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Das 08:00 às 18:00 Hrs',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+
+          const SizedBox(height: 20),
+
+          // Texto "Horários"
+          const Text(
+            'Horários:',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Das 08:00 às 18:00 Hrs',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
 
-  Widget _buildCalendar() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          const Text(
-            'Julho 2025',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: const [
-              Text(
-                'segunda',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              Text(
-                'terça',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              Text(
-                'quarta',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              Text(
-                'quinta',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              Text(
-                'sexta',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              Text(
-                'sábado',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                  fontSize: 10,
-                ),
-              ),
-              Text(
-                'domingo',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-          const Divider(),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-              childAspectRatio: 1.0,
-            ),
-            itemCount: 31,
-            itemBuilder: (context, index) {
-              final day = index + 1;
-              final bool isToday = day == 2 || day == 3;
-              final bool isWeekend = (index % 7 == 5) || (index % 7 == 6);
-
-              return Center(
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: isToday
-                      ? const BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                        )
-                      : null,
-                  child: Center(
-                    child: Text(
-                      '$day',
-                      style: TextStyle(
-                        color: isWeekend
-                            ? Colors.red
-                            : isToday
-                            ? Colors.white
-                            : Colors.black,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
+  String _mesPorExtenso(int mes) {
+    const meses = [
+      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+    ];
+    return meses[mes - 1];
   }
 }

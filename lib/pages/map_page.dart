@@ -34,7 +34,7 @@ class MapPage extends StatelessWidget {
 
       body: Column(
         children: [
-          // Cabeçalho
+          // Cabeçalho igual ao da tela de projetos
           Container(
             color: const Color(0xFF0A1C60),
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
@@ -63,7 +63,7 @@ class MapPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Mapa Escolar",
+                          "Olá, usuário!",
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class MapPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Visualize os locais",
+                          "Seja bem-vindo (a)",
                           style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
                       ],
@@ -83,22 +83,31 @@ class MapPage extends StatelessWidget {
             ),
           ),
 
-          // Conteúdo principal com a imagem do mapa
-          SizedBox(
-            height: 400, // ajuste conforme preferir
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0A1C60),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    'assets/images/planta.png',
-                    fit: BoxFit.contain,
-                    width: double.infinity,
+          const SizedBox(height: 20),
+          // Título centralizado como na tela de projetos
+          const Text(
+            'Mapa Escolar',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          // Imagem um pouco mais acima
+          Expanded(
+            child: Align(
+              alignment: Alignment.topCenter, // <<< faz a imagem subir
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20, left: 12, right: 12),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Image.asset(
+                      'assets/images/planta.png',
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
