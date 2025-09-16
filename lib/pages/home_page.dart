@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:tcc_sla_project/pages/map_page.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
@@ -30,11 +32,11 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF061143),
-        shape: const CircularNotchedRectangle(),
+      bottomNavigationBar: const BottomAppBar(
+        color: Color(0xFF061143),
+        shape: CircularNotchedRectangle(),
         notchMargin: 8.0,
-        child: const SizedBox(height: 56),
+        child: SizedBox(height: 56),
       ),
 
       body: Column(
@@ -64,22 +66,27 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Olá, usuário!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "Seja bem-vindo (a)",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
+                    // Usando Consumer para obter o nome do usuário
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, child) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Olá, ${userProvider.user?.name ?? 'usuário'}!",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Text(
+                              "Seja bem-vindo (a)",
+                              style: TextStyle(color: Colors.white70, fontSize: 14),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -165,91 +172,91 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildGridButton(
-    BuildContext context,
-    IconData icon,
-    String label,
-    Widget? page, {
-    Future<void> Function(String)? abrirWeb,
-  }) {
-    return ElevatedButton(
-      onPressed: () {
-        if (label == "ADICIONAR PROJETO" && abrirWeb != null) {
-          showDialog(
-            context: context,
-            builder: (_) {
-              return Dialog(
-                backgroundColor: const Color(0xFF0A1C60),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Image.asset('assets/images/logo1.png', height: 60),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "SLA CONNECT",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+      BuildContext context,
+      IconData icon,
+      String label,
+      Widget? page, {
+      Future<void> Function(String)? abrirWeb,
+    }) {
+      return ElevatedButton(
+        onPressed: () {
+          if (label == "ADICIONAR PROJETO" && abrirWeb != null) {
+            showDialog(
+              context: context,
+              builder: (_) {
+                return Dialog(
+                  backgroundColor: const Color(0xFF0A1C60),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset('assets/images/logo1.png', height: 60),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "SLA CONNECT",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        "Deseja ser redirecionado para página web, para poder criar um projeto?",
-                        style: TextStyle(color: Colors.white70, fontSize: 14),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                            child: const Text("Cancelar"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              abrirWeb("https://sua-url-aqui.com");
-                            },
-                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1C2F70)),
-                            child: const Text("Confirmar"),
-                          ),
-                        ],
-                      )
-                    ],
+                        const SizedBox(height: 12),
+                        const Text(
+                          "Deseja ser redirecionado para página web, para poder criar um projeto?",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                              child: const Text("Cancelar"),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                abrirWeb("https://sua-url-aqui.com");
+                              },
+                              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1C2F70)),
+                              child: const Text("Confirmar"),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-          );
-        } else if (page != null) {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => page));
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFF12226C),
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        padding: const EdgeInsets.symmetric(vertical: 16),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-          ),
-        ],
-      ),
-    );
-  }
+                );
+              },
+            );
+          } else if (page != null) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF12226C),
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 28),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            ),
+          ],
+        ),
+      );
+    }
 }

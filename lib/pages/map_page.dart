@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 
@@ -34,7 +37,7 @@ class MapPage extends StatelessWidget {
 
       body: Column(
         children: [
-          // Cabeçalho igual ao da tela de projetos
+          // Cabeçalho
           Container(
             color: const Color(0xFF0A1C60),
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
@@ -59,22 +62,26 @@ class MapPage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Olá, usuário!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "Seja bem-vindo (a)",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
+
+                    // Aqui usamos o UserProvider
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, child) {
+                        final user = userProvider.user;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Olá, ${user?.name ?? 'usuário'}!",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -84,7 +91,7 @@ class MapPage extends StatelessWidget {
           ),
 
           const SizedBox(height: 20),
-          // Título centralizado como na tela de projetos
+          // Título centralizado
           const Text(
             'Mapa Escolar',
             style: TextStyle(
@@ -95,10 +102,10 @@ class MapPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Imagem um pouco mais acima
+          // Imagem
           Expanded(
             child: Align(
-              alignment: Alignment.topCenter, // <<< faz a imagem subir
+              alignment: Alignment.topCenter,
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20, left: 12, right: 12),

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
+import 'package:tcc_sla_project/pages/home_page.dart';
 
 class SlaPage extends StatelessWidget {
   const SlaPage({super.key});
@@ -9,15 +13,21 @@ class SlaPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF061143),
 
+      // Botão Home no centro
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context); // volta para a Home
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const HomePage()),
+            (route) => false,
+          );
         },
         backgroundColor: const Color(0xFF1C2F70),
         child: const Icon(Icons.home, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
+      // Barra inferior
       bottomNavigationBar: BottomAppBar(
         color: const Color(0xFF1C2F70),
         shape: const CircularNotchedRectangle(),
@@ -27,7 +37,7 @@ class SlaPage extends StatelessWidget {
 
       body: Column(
         children: [
-          // Header com perfil e logo
+          // 🔹 Cabeçalho padronizado com nome do usuário
           Container(
             color: const Color(0xFF0A1C60),
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
@@ -46,22 +56,25 @@ class SlaPage extends StatelessWidget {
                       child: const Icon(Icons.person, color: Colors.white, size: 36),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Olá, usuário!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "Seja bem-vindo (a)",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
+
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, child) {
+                        final user = userProvider.user;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Olá, ${user?.name ?? 'usuário'}!",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),

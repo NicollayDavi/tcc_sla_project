@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 import 'package:tcc_sla_project/pages/project_detail_page.dart';
@@ -68,22 +71,32 @@ class _ProjectPageState extends State<ProjectPage> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Olá, usuário!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "Seja bem-vindo (a)",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
+
+                    // 🔹 Aqui entra o nome do usuário pelo UserProvider
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, child) {
+                        final user = userProvider.user;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Olá, ${user?.name ?? 'usuário'}!",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Text(
+                              "Seja bem-vindo (a)",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),

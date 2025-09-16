@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 
@@ -9,7 +12,7 @@ class DatePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now();
     final int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-    final int firstWeekday = DateTime(now.year, now.month, 1).weekday; // 1 = segunda, 7 = domingo
+    final int firstWeekday = DateTime(now.year, now.month, 1).weekday; // 1 = seg, 7 = dom
 
     // Cria lista com dias do mês + espaços em branco do início
     final List<Widget> dayWidgets = [];
@@ -69,7 +72,7 @@ class DatePage extends StatelessWidget {
 
       body: Column(
         children: [
-          // Cabeçalho padronizado
+          // 🔹 Cabeçalho padronizado com UserProvider
           Container(
             color: const Color(0xFF0A1C60),
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
@@ -94,22 +97,32 @@ class DatePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Olá, usuário!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "Seja bem-vindo (a)",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                        ),
-                      ],
+
+                    // Aqui entra o nome do usuário via UserProvider
+                    Consumer<UserProvider>(
+                      builder: (context, userProvider, child) {
+                        final user = userProvider.user;
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Olá, ${user?.name ?? 'usuário'}!",
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Text(
+                              "Seja bem-vindo (a)",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ],
                 ),
