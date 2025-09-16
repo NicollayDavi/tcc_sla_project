@@ -1,4 +1,8 @@
+
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tcc_sla_project/models/user_provider.dart';
 
 class ViewProfilePage extends StatefulWidget {
   const ViewProfilePage({super.key});
@@ -12,6 +16,8 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserProvider>(context).user;
+
     return Scaffold(
       backgroundColor: const Color(0xFF061143),
       appBar: AppBar(
@@ -40,9 +46,9 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               child: Icon(Icons.person, size: 50, color: Color(0xFF061143)),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "Usuário",
-              style: TextStyle(
+            Text(
+              user?.name ?? "Usuário",
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
@@ -56,13 +62,13 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
               ),
               child: Column(
                 children: [
-                  _buildInfoField(label: "Nome:", value: "Fulano da Silva"),
+                  _buildInfoField(label: "Nome:", value: user?.name ?? ""),
                   const SizedBox(height: 12),
-                  _buildInfoField(label: "RM:", value: "123456"),
+                  _buildInfoField(label: "RM:", value: user?.rm ?? ""),
                   const SizedBox(height: 12),
                   _buildInfoField(
                     label: "E-mail",
-                    value: "fulano@gmail.com",
+                    value: user?.email ?? "",
                     icon: Icons.email,
                   ),
                   const SizedBox(height: 12),
@@ -130,3 +136,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
     );
   }
 }
+
+
+
+
