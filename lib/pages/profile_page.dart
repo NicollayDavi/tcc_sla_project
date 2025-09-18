@@ -39,35 +39,10 @@ class ProfilePage extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    const CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.person, color: Color(0xFF061143)),
-                    ),
-                    const SizedBox(width: 12),
-                    // Usando Consumer para obter o nome do usuário
-                    Consumer<UserProvider>(
-                      builder: (context, userProvider, child) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Olá, ${userProvider.user?.name ?? 'usuário'}!',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Text(
-                              'Seja bem-vindo (a)',
-                              style: TextStyle(color: Colors.white70, fontSize: 12),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ],
+                const Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: 36,
                 ),
                 Image.asset('assets/images/logo1.png', height: 40),
               ],

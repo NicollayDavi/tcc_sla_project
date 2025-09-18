@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 
@@ -37,60 +34,41 @@ class MapPage extends StatelessWidget {
 
       body: Column(
         children: [
-          // Cabeçalho
+          // Cabeçalho (ícone pessoa à esquerda, lobo à direita)
           Container(
             color: const Color(0xFF0A1C60),
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ProfilePage(),
-                          ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 36,
+                // Ícone de perfil
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProfilePage(),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-
-                    // Aqui usamos o UserProvider
-                    Consumer<UserProvider>(
-                      builder: (context, userProvider, child) {
-                        final user = userProvider.user;
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Olá, ${user?.name ?? 'usuário'}!",
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            
-                          ],
-                        );
-                      },
-                    ),
-                  ],
+                    );
+                  },
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 36,
+                  ),
                 ),
-                Image.asset('assets/images/logo1.png', height: 60),
+
+                // Logo do lobo
+                Image.asset(
+                  'assets/images/logo1.png',
+                  height: 60,
+                ),
               ],
             ),
           ),
 
           const SizedBox(height: 20),
+
           // Título centralizado
           const Text(
             'Mapa Escolar',
@@ -102,7 +80,7 @@ class MapPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Imagem
+          // Imagem principal
           Expanded(
             child: Align(
               alignment: Alignment.topCenter,

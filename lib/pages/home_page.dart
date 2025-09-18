@@ -32,8 +32,9 @@ class HomePage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
+      // 🔹 Barra inferior com cor mais clara e notch
       bottomNavigationBar: const BottomAppBar(
-        color: Color(0xFF061143),
+        color: Color(0xFF1C2F70), // <- mesmo azul usado nas outras telas
         shape: CircularNotchedRectangle(),
         notchMargin: 8.0,
         child: SizedBox(height: 56),
@@ -90,7 +91,7 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                Image.asset('assets/images/logo1.png', height: 40), // logo topo
+                Image.asset('assets/images/logo1.png', height: 60), // logo topo
               ],
             ),
           ),
@@ -178,85 +179,85 @@ class HomePage extends StatelessWidget {
       Widget? page, {
       Future<void> Function(String)? abrirWeb,
     }) {
-      return ElevatedButton(
-        onPressed: () {
-          if (label == "ADICIONAR PROJETO" && abrirWeb != null) {
-            showDialog(
-              context: context,
-              builder: (_) {
-                return Dialog(
-                  backgroundColor: const Color(0xFF0A1C60),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset('assets/images/logo1.png', height: 60),
-                        const SizedBox(height: 10),
-                        const Text(
-                          "SLA CONNECT",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+    return ElevatedButton(
+      onPressed: () {
+        if (label == "ADICIONAR PROJETO" && abrirWeb != null) {
+          showDialog(
+            context: context,
+            builder: (_) {
+              return Dialog(
+                backgroundColor: const Color(0xFF0A1C60),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset('assets/images/logo1.png', height: 60),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "SLA CONNECT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "Deseja ser redirecionado para página web, para poder criar um projeto?",
+                        style: TextStyle(color: Colors.white70, fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                            child: const Text("Cancelar"),
                           ),
-                        ),
-                        const SizedBox(height: 12),
-                        const Text(
-                          "Deseja ser redirecionado para página web, para poder criar um projeto?",
-                          style: TextStyle(color: Colors.white70, fontSize: 14),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                              child: const Text("Cancelar"),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                abrirWeb("https://sua-url-aqui.com");
-                              },
-                              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1C2F70)),
-                              child: const Text("Confirmar"),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              abrirWeb("https://sua-url-aqui.com");
+                            },
+                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF1C2F70)),
+                            child: const Text("Confirmar"),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
-                );
-              },
-            );
-          } else if (page != null) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => page));
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF12226C),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 28),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            ),
-          ],
-        ),
-      );
-    }
+                ),
+              );
+            },
+          );
+        } else if (page != null) {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: const Color(0xFF12226C),
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 28),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -69,7 +69,7 @@ class ProjectDetailPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Sala: $room",
+                          "$room",
                           style: const TextStyle(color: Colors.white70),
                         ),
                         Text(
