@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tcc_sla_project/pages/login_page.dart';
 import 'package:tcc_sla_project/controllers/register_controller.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,12 @@ class _RegisterPageState extends State<RegisterPage> {
   final _rmController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   bool _obscurePassword = true;
+
+  // Mensagens de erro exibidas abaixo dos campos
+  String? _rmError;
+  String? _passwordError;
 
   @override
   void dispose() {
@@ -33,13 +39,50 @@ class _RegisterPageState extends State<RegisterPage> {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
+    // limpa erros visuais antes de validar
+    setState(() {
+      _rmError = null;
+      _passwordError = null;
+    });
+
     if (nome.isEmpty || rm.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
       return;
     }
 
+    // Validação do RM: exatamente 5 dígitos (já limitados pelo input formatter)
+    if (rm.length != 5) {
+      setState(() {
+        _rmError = 'O RM deve ter exatamente 5 números';
+      });
+      return;
+    }
+
+    // Validação da senha
+    if (password.contains(' ')) {
+      setState(() {
+        _passwordError = 'A senha não pode conter espaços';
+      });
+      return;
+    }
+
+    if (password.length < 5) {
+      setState(() {
+        _passwordError = 'A senha deve ter pelo menos 5 caracteres';
+      });
+      return;
+    }
+
+    if (password.length > 8) {
+      setState(() {
+        _passwordError = 'A senha não pode ter mais de 8 caracteres';
+      });
+      return;
+    }
+
+    // Chamada ao controller para cadastrar
     final success = await RegisterController.register(
       nome,
       email,
@@ -49,7 +92,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (success) {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-      userProvider.setUser(nome, rm, email);
+      userProvider.setUser(
+        nome,
+        rm,
+        email,
+        password,
+      ); // password daqui é a senha digitada
 
       Navigator.pushReplacement(
         context,
@@ -117,23 +165,38 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              _buildLabel("Nome"),
-              _buildInput("Digite o nome...", _nomeController),
+
+              _buildLabel('Nome'),
+              _buildInput('Digite o nome...', _nomeController),
               const SizedBox(height: 10),
-              _buildLabel("RM"),
-              _buildInput("Digite o RM...", _rmController),
-              const SizedBox(height: 10),
-              _buildLabel("E-mail"),
-              _buildInput("Digite o e-mail do usuário...", _emailController),
-              const SizedBox(height: 10),
-              _buildLabel("Senha"),
+
+              _buildLabel('RM'),
               _buildInput(
-                "Digite uma senha...",
+                'Digite o RM...',
+                _rmController,
+                isRM: true,
+                errorText: _rmError,
+              ),
+              const SizedBox(height: 10),
+
+              _buildLabel('E-mail'),
+              _buildInput(
+                'Digite o e-mail do usuário...',
+                _emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 10),
+
+              _buildLabel('Senha'),
+              _buildInput(
+                'Digite uma senha...',
                 _passwordController,
-                obscure: _obscurePassword, // Passa a variável de estado
+                obscure: _obscurePassword,
                 isPassword: true,
+                errorText: _passwordError,
               ),
               const SizedBox(height: 25),
+
               SizedBox(
                 height: 50,
                 child: ElevatedButton(
@@ -145,10 +208,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text("Criar", style: TextStyle(fontSize: 18)),
+                  child: const Text('Criar', style: TextStyle(fontSize: 18)),
                 ),
               ),
+
               const SizedBox(height: 15),
+
               SizedBox(
                 height: 40,
                 child: OutlinedButton(
@@ -167,7 +232,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  child: const Text("Cancelar", style: TextStyle(fontSize: 14)),
+                  child: const Text('Cancelar', style: TextStyle(fontSize: 14)),
                 ),
               ),
             ],
@@ -182,39 +247,75 @@ class _RegisterPageState extends State<RegisterPage> {
     TextEditingController controller, {
     bool obscure = false,
     bool isPassword = false,
+    bool isRM = false,
+    String? errorText,
+    TextInputType? keyboardType,
   }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscure,
-      obscuringCharacter: '•',
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.white70),
-        filled: true,
-        fillColor: const Color(0xFF0A1A3C),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: controller,
+          obscureText: obscure,
+          obscuringCharacter: '•',
+          style: const TextStyle(color: Colors.white),
+          keyboardType:
+              keyboardType ??
+              (isRM ? TextInputType.number : TextInputType.text),
+          inputFormatters: isRM
+              ? [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(5),
+                ]
+              : null,
+          onChanged: (_) {
+            if (isRM && _rmError != null) {
+              setState(() {
+                _rmError = null;
+              });
+            }
+            if (isPassword && _passwordError != null) {
+              setState(() {
+                _passwordError = null;
+              });
+            }
+          },
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: const TextStyle(color: Colors.white70),
+            filled: true,
+            fillColor: const Color(0xFF0A1A3C),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 14,
+            ),
+            suffixIcon: isPassword
+                ? IconButton(
+                    icon: Icon(
+                      obscure ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white70,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  )
+                : null,
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 14,
-        ),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  obscure ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.white70,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              )
-            : null,
-      ),
+        if (errorText != null) ...[
+          const SizedBox(height: 5),
+          Text(
+            errorText,
+            style: const TextStyle(color: Colors.red, fontSize: 12),
+          ),
+        ],
+      ],
     );
   }
 

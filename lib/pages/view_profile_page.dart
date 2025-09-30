@@ -74,7 +74,7 @@ class _ViewProfilePageState extends State<ViewProfilePage> {
                     obscureText: !_showPassword,
                     readOnly: true,
                     controller: TextEditingController(
-                      text: _showPassword ? "minhaSenha123" : "**********",
+                      text: _showPassword ? (user?.senha ?? "") : "********",
                     ),
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
