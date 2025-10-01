@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:flutter/services.dart';
 import 'package:tcc_sla_project/pages/login_page.dart';
 import 'package:tcc_sla_project/controllers/register_controller.dart';
@@ -57,6 +57,15 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         _rmError = 'O RM deve ter exatamente 5 números';
       });
+      return;
+    }
+
+    // Validação do e-mail
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+    if (!emailRegex.hasMatch(email) || !email.endsWith(".com")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Digite um e-mail válido')),
+      );
       return;
     }
 
