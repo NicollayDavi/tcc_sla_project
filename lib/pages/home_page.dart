@@ -217,7 +217,7 @@ class HomePage extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.black),
                             child: const Text("Cancelar"),
                           ),
                           ElevatedButton(
@@ -225,7 +225,7 @@ class HomePage extends StatelessWidget {
                               Navigator.pop(context);
                               abrirWeb("https://sua-url-aqui.com");
                             },
-                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF1C2F70)),
+                            style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF1C2F70), foregroundColor: Colors.white),
                             child: const Text("Confirmar"),
                           ),
                         ],

@@ -52,7 +52,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    // Validação do RM: exatamente 5 dígitos (já limitados pelo input formatter)
+    // Validação do RM: exatamente 5 dígitos
     if (rm.length != 5) {
       setState(() {
         _rmError = 'O RM deve ter exatamente 5 números';
@@ -106,11 +106,58 @@ class _RegisterPageState extends State<RegisterPage> {
         rm,
         email,
         password,
-      ); // password daqui é a senha digitada
+      );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginPage()),
+      // Exibe um AlertDialog estilizado
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          backgroundColor: const Color(0xFF0A1A3C),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            'Sucesso!',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white, // alterado para branco
+            ),
+          ),
+          content: const Text(
+            'Conta cadastrada!',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+          actions: [
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // fecha o dialog
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.cyanAccent,
+                  foregroundColor: Colors.black,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text(
+                  'OK',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

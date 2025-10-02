@@ -184,7 +184,8 @@ class ProfilePage extends StatelessWidget {
                                           Navigator.pop(context);
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.grey,
+                                          backgroundColor: Colors.white,
+                                          foregroundColor: Colors.black,
                                         ),
                                         child: const Text("Cancelar"),
                                       ),
@@ -200,6 +201,7 @@ class ProfilePage extends StatelessWidget {
                                         },
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: const Color(0xFF1C2F70),
+                                          foregroundColor: Colors.white, // 🔥 texto branco
                                         ),
                                         child: const Text("Confirmar"),
                                       ),
