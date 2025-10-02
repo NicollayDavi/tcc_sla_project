@@ -7,27 +7,30 @@ class DatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // 🔹 Força o mês para JULHO do ano atual
     final DateTime now = DateTime.now();
-    final int daysInMonth = DateTime(now.year, now.month + 1, 0).day;
-    final int firstWeekday = DateTime(now.year, now.month, 1).weekday; // 1 = seg, 7 = dom
+    final DateTime fixedDate = DateTime(now.year, 7, 1);
 
-    // Cria lista com dias do mês + espaços em branco do início
+    final int daysInMonth = DateTime(fixedDate.year, fixedDate.month + 1, 0).day;
+    final int firstWeekday = fixedDate.weekday; // 1 = seg, 7 = dom
+
+    // Lista de widgets dos dias
     final List<Widget> dayWidgets = [];
 
-    // Espaços antes do 1º dia
+    // Espaços antes do 1º dia do mês
     for (int i = 1; i < firstWeekday; i++) {
       dayWidgets.add(const SizedBox());
     }
 
     // Dias do mês
     for (int day = 1; day <= daysInMonth; day++) {
-      final bool isToday = day == now.day;
+      final bool isSelected = (day == 2 || day == 3); // ✅ bolinha verde nos dias 2 e 3
 
       dayWidgets.add(
         Container(
           margin: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: isToday ? Colors.green : Colors.transparent,
+            color: isSelected ? Colors.green : Colors.transparent,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
@@ -35,7 +38,7 @@ class DatePage extends StatelessWidget {
             "$day",
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: isToday ? Colors.white : Colors.black,
+              color: isSelected ? Colors.white : Colors.black,
             ),
           ),
         ),
@@ -45,7 +48,6 @@ class DatePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF061143),
 
-      // Botão flutuante central (voltar para a Home)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushAndRemoveUntil(
@@ -59,7 +61,6 @@ class DatePage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-      // Barra inferior
       bottomNavigationBar: BottomAppBar(
         color: const Color(0xFF1C2F70),
         shape: const CircularNotchedRectangle(),
@@ -69,14 +70,13 @@ class DatePage extends StatelessWidget {
 
       body: Column(
         children: [
-          // 🔹 Cabeçalho padronizado (sem "Olá, usuário!")
+          // 🔹 Cabeçalho
           Container(
             color: const Color(0xFF0A1C60),
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Ícone de perfil
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -92,8 +92,6 @@ class DatePage extends StatelessWidget {
                     size: 36,
                   ),
                 ),
-
-                // Logo do lobo
                 Image.asset('assets/images/logo1.png', height: 60),
               ],
             ),
@@ -101,7 +99,6 @@ class DatePage extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Título "DATAS"
           const Text(
             'DATAS:',
             style: TextStyle(
@@ -112,7 +109,6 @@ class DatePage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // Calendário manual
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -123,9 +119,9 @@ class DatePage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Mês e ano
+                  // 🔹 Sempre JULHO
                   Text(
-                    "${_mesPorExtenso(now.month)} ${now.year}",
+                    "Julho ${fixedDate.year}",
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -133,7 +129,6 @@ class DatePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  // Dias da semana
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: const [
@@ -148,7 +143,6 @@ class DatePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
 
-                  // Dias em grid
                   Expanded(
                     child: GridView.count(
                       crossAxisCount: 7,
@@ -162,7 +156,6 @@ class DatePage extends StatelessWidget {
 
           const SizedBox(height: 20),
 
-          // Texto "Horários"
           const Text(
             'Horários:',
             style: TextStyle(
@@ -180,13 +173,5 @@ class DatePage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _mesPorExtenso(int mes) {
-    const meses = [
-      "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-      "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-    ];
-    return meses[mes - 1];
   }
 }
