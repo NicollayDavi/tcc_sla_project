@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
-
-//import 'package:tcc_sla_project/models/user_provider.dart';
 import 'package:tcc_sla_project/pages/profile_page.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
 import 'package:tcc_sla_project/pages/project_detail_page.dart';
+import 'package:tcc_sla_project/controllers/project_controller.dart';
+import 'package:tcc_sla_project/models/project_model.dart';
+import 'dart:convert';
 
 class ProjectPage extends StatefulWidget {
   const ProjectPage({super.key});
@@ -14,15 +14,28 @@ class ProjectPage extends StatefulWidget {
 }
 
 class _ProjectPageState extends State<ProjectPage> {
-  List<Map<String, dynamic>> projects = [
-    {
-      'title': 'IGUALDADE DE GÊNERO',
-      'date': '02/07/2024',
-      'hour': '08:00 até 15:00',
-      'room': 'Sala: 14',
-      'favorite': false,
-    },
-  ];
+  List<Project> projects = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProjects();
+  }
+
+  Future<void> _loadProjects() async {
+    try {
+      final projectList = await ProjectController.getProjects();
+      setState(() {
+        projects = projectList;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,30 +98,31 @@ class _ProjectPageState extends State<ProjectPage> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView.builder(
-              itemCount: projects.length,
-              itemBuilder: (context, index) {
-                final project = projects[index];
-                return _buildProjectCard(
-                  title: project['title'],
-                  date: project['date'],
-                  hour: project['hour'],
-                  room: project['room'],
-                );
-              },
-            ),
+            child: isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  )
+                : projects.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'Nenhum projeto encontrado',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: projects.length,
+                        itemBuilder: (context, index) {
+                          final project = projects[index];
+                          return _buildProjectCard(project: project);
+                        },
+                      ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProjectCard({
-    required String title,
-    required String date,
-    required String hour,
-    required String room,
-  }) {
+  Widget _buildProjectCard({required Project project}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
       decoration: BoxDecoration(
@@ -121,25 +135,55 @@ class _ProjectPageState extends State<ProjectPage> {
             context,
             MaterialPageRoute(
               builder: (_) => ProjectDetailPage(
-                title: title,
-                date: date,
-                hour: hour,
-                room: room,
+                project: project,
               ),
             ),
           );
         },
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.asset(
-            'assets/images/logo3.png',
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
+        leading: Container(
+          margin: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.all(4),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              width: 70,
+              height: 70,
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: project.imagem != null && project.imagem!.isNotEmpty
+                    ? Image.memory(
+                        base64Decode(project.imagem!),
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey.shade600,
+                            child: const Icon(
+                              Icons.image_not_supported,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          );
+                        },
+                      )
+                    : Container(
+                        color: Colors.grey.shade600,
+                        child: const Icon(
+                          Icons.image,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
+              ),
+            ),
           ),
         ),
         title: Text(
-          title,
+          project.nome,
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -148,12 +192,21 @@ class _ProjectPageState extends State<ProjectPage> {
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Dia: $date', style: const TextStyle(color: Colors.white70)),
+            if (project.descricao.isNotEmpty)
+              Text(
+                project.descricao,
+                style: const TextStyle(color: Colors.white70),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
             Text(
-              'Horários: Das $hour',
+              'Início: ${project.dataInicio.isNotEmpty ? project.dataInicio : 'Não informado'}',
               style: const TextStyle(color: Colors.white70),
             ),
-            Text(room, style: const TextStyle(color: Colors.white70)),
+            Text(
+              'Status: ${project.status.isNotEmpty ? project.status : 'Não informado'}',
+              style: const TextStyle(color: Colors.white70),
+            ),
           ],
         ),
       ),

@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:tcc_sla_project/pages/home_page.dart';
+import 'package:tcc_sla_project/models/project_model.dart';
+import 'dart:convert';
 
 class ProjectDetailPage extends StatelessWidget {
-  final String title;
-  final String date;
-  final String hour;
-  final String room;
+  final Project project;
 
   const ProjectDetailPage({
     super.key,
-    required this.title,
-    required this.date,
-    required this.hour,
-    required this.room,
+    required this.project,
   });
 
   @override
@@ -27,7 +23,7 @@ class ProjectDetailPage extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
-          title,
+          project.nome,
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -47,13 +43,45 @@ class ProjectDetailPage extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.asset(
-                      'assets/images/logo3.png',
-                      width: 60,
-                      height: 60,
-                      fit: BoxFit.cover,
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: project.imagem != null && project.imagem!.isNotEmpty
+                              ? Image.memory(
+                                  base64Decode(project.imagem!),
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey.shade600,
+                                      child: const Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.white,
+                                        size: 36,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  color: Colors.grey.shade600,
+                                  child: const Icon(
+                                    Icons.image,
+                                    color: Colors.white,
+                                    size: 36,
+                                  ),
+                                ),
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -69,15 +97,15 @@ class ProjectDetailPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "$room",
+                          "Status: ${project.status.isNotEmpty ? project.status : 'Não informado'}",
                           style: const TextStyle(color: Colors.white70),
                         ),
                         Text(
-                          "Dia: $date",
+                          "Início: ${project.dataInicio.isNotEmpty ? project.dataInicio : 'Não informado'}",
                           style: const TextStyle(color: Colors.white70),
                         ),
                         Text(
-                          "Horários: Das $hour",
+                          "Fim: ${project.dataFim.isNotEmpty ? project.dataFim : 'Não informado'}",
                           style: const TextStyle(color: Colors.white70),
                         ),
                       ],
@@ -99,9 +127,9 @@ class ProjectDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              "O projeto busca promover a conscientização sobre a importância da igualdade de gênero por meio de debates, dinâmicas e exposição de ideias. Durante a apresentação, serão discutidos estereótipos de gênero, desigualdades no mercado de trabalho, representação política e na mídia, além de estratégias para combater o machismo e a discriminação. O público será convidado a participar ativamente, compartilhando ideias e experiências para que, juntos, possamos construir pontes de respeito e equidade.",
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+            Text(
+              project.descricao.isNotEmpty ? project.descricao : 'Descrição não informada',
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
               textAlign: TextAlign.justify,
             ),
 
